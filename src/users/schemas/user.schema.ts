@@ -6,6 +6,6 @@ export const UserSchema = new mongoose.Schema(
     name: {type: String, unique: true},
     email: {type: String, unique: true},
     userName: String,
-    passowrd: String,
+    password: String,
   },{ timestamps: true }
 );
