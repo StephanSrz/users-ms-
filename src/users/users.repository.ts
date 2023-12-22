@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IUsers } from 'src/common/interfaces/users.interfaces';
 import { UserEntity } from './entity/user.entity';
 import { USERS } from 'src/common/models/user.model';
-import { bcrypt } from "bcrypt"
+import * as bcrypt from "bcrypt"
 
 @Injectable()
 export class UserRepository {
@@ -26,9 +26,20 @@ export class UserRepository {
   }
 
   async saveUser(userEntity: UserEntity): Promise<IUsers>{
-    const newPassword = this.hashPassword(userEntity.password);
-    
-    let newUser = new this.userModel(userEntity)
+    const newPassword = await this.hashPassword(userEntity.password);
+    let newUser = new this.userModel({...userEntity, password: newPassword})
     return await newUser.save()
+  }
+
+  async getUserById(id: string): Promise<IUsers>{
+    return await this.userModel.findById(id);
+  }
+
+  async updateUser(id: string, userEntity: UserEntity): Promise<IUsers>{
+    return await this.userModel.findByIdAndUpdate(id, userEntity, { new: true })
+  }
+
+  async deleteUser(id: string){
+    return await this.userModel.findByIdAndDelete(id);
   }
 }
