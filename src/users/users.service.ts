@@ -35,12 +35,8 @@ export class UsersService {
     return this.userRepository.saveUser(userEntity);
   }
 
-  async getUserById(id: string): Promise<IUsers | null>{
-    const user = await this.userRepository.getUserById(id); 
-    if(!user){
-      return null;
-    }
-    return user
+  async getUserById(id: string): Promise<IUsers | null>{ 
+    return await this.userRepository.getUserById(id);
   }
 
   async updateUser(id: string, userDto: UserDTO){

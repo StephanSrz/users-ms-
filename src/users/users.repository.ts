@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUsers } from 'src/common/interfaces/users.interfaces';
@@ -11,7 +11,7 @@ export class UserRepository {
   constructor(@InjectModel(USERS.name) private readonly userModel: Model<IUsers>){}
 
   async findAll(): Promise<IUsers[]> {
-    return this.userModel.find();
+    return await this.userModel.find();
   }
 
   async saveUser(userEntity: UserEntity): Promise<IUsers>{
@@ -20,11 +20,7 @@ export class UserRepository {
   }
 
   async getUserById(id: string): Promise<IUsers>{
-    try {
-      return await this.userModel.findById(id);
-    } catch (error) {
-      throw new NotFoundException(`Error: user with id: ${id} Not Found. Details: ${error.message}`);
-    }
+    return await this.userModel.findById(id);
   }
 
   async updateUser(id: string, userEntity: UserEntity): Promise<IUsers>{
@@ -39,7 +35,7 @@ export class UserRepository {
       }
       return true
     }catch(error){
-      throw new NotFoundException(`Error: user with id: ${id} Not Found. Details: ${error.message}`);
+      throw new Error(`Error: user with id: ${id} Not Found. Details: ${error.message}`);
     }
   }
 }

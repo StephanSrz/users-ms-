@@ -1,9 +1,27 @@
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min, Length } from "class-validator"
 
-export class RoomDto{
-  id: string
+export class RoomDTO{
+  @IsNotEmpty({message: "Name can not be empty"})
+  @IsString({message: "Name must be an string"})
   name: string
-  description: string
-  code: string
-  cantMaxUsers: number | null
+
+  @IsOptional()
+  @IsNotEmpty({message: "Description can not be empty"})
+  @IsString({message: "Description must be an string or null"})
+  description: string | null
+
+  @IsNotEmpty({message: "Code can not be empty"})
+  @IsString({message: "Code must be an string"})
+  @Length(6, 6, {message: "Room Code must be exactly 6 digits"})
+  roomCode: string
+
+  @IsOptional()
+  @IsNotEmpty({message: "Maximum number of users can not be empty"})
+  @IsNumber({}, {message: "Maximum number of users must be a number or null"})
+  @Min(1, {message: "Maximum number of users must be at least 1"})
+  maxNumUsers: number | null
+
+  @IsNotEmpty({message: "Craeted by User Id can not be empty"})
+  @IsString({message: "Craeted by User Id must be an string"})
   createdBy: string
 }
