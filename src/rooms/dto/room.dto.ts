@@ -10,11 +10,6 @@ export class RoomDTO{
   @IsString({message: "Description must be an string or null"})
   description: string | null
 
-  @IsNotEmpty({message: "Code can not be empty"})
-  @IsString({message: "Code must be an string"})
-  @Length(6, 6, {message: "Room Code must be exactly 6 digits"})
-  roomCode: string
-
   @IsOptional()
   @IsNotEmpty({message: "Maximum number of users can not be empty"})
   @IsNumber({}, {message: "Maximum number of users must be a number or null"})

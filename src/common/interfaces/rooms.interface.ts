@@ -4,5 +4,6 @@ export interface IRooms extends Document{
   description: string | null,
   roomCode: string,
   maxNumUsers: number | null,
-  createdBy: string
+  createdBy: string,
+  users: string[],
 }

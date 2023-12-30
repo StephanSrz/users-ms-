@@ -28,14 +28,10 @@ export class UserRepository {
   }
 
   async deleteUser(id: string): Promise<boolean> | null{
-    try{
-      const userDeleted = await this.userModel.findByIdAndDelete(id);
-      if(!userDeleted){
-        return null
-      }
-      return true
-    }catch(error){
-      throw new Error(`Error: user with id: ${id} Not Found. Details: ${error.message}`);
+    const userDeleted = await this.userModel.findByIdAndDelete(id);
+    if(!userDeleted){
+      return null;
     }
+    return true;
   }
 }
