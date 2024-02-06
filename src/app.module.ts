@@ -7,7 +7,7 @@ import { RoomsModule } from './rooms/rooms.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.development.env'],
+      envFilePath: ['.env.development'],
       isGlobal: true
     }), 
     MongooseModule.forRoot(process.env.MONGO_URI + process.env.DB_NAME),
