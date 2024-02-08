@@ -2,12 +2,14 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Res } from '@nestjs/co
 import { UsersService } from './users.service';
 import { UserDTO } from './dto/user.dto';
 import { Response } from 'express';
+import { MessagePattern, Payload } from '@nestjs/microservices'; 
+import { UsersMSG } from 'src/common/constants/rabbitmq';
 
-@Controller('api/v1/users/')
+@Controller()
 export class UsersController {
   constructor(private readonly userService: UsersService){}
 
-  @Get()
+  @MessagePattern(UsersMSG.FIND_ALL)
   async getUsers(@Res() res: Response){
     const users = await this.userService.findAll();
     if(!users){
@@ -16,13 +18,13 @@ export class UsersController {
     return res.status(200).json( users );
   }
 
-  @Post()
-  saveUser(@Body() userDto: UserDTO){
+  @MessagePattern(UsersMSG.CREATE)
+  saveUser(@Payload() userDto: UserDTO){
     return this.userService.saveUser(userDto);
   }
 
-  @Get(':id')
-  async getUserById(@Param('id') id: string, @Res() res: Response){
+  @MessagePattern(UsersMSG.FIND_ONE)
+  async getUserById(@Payload() id: string, @Res() res: Response){
     const user = await this.userService.getUserById(id);
     if(!user){
       return res.status(404).json({ message: `User with id ${id} Not Found` });
@@ -30,17 +32,17 @@ export class UsersController {
     return res.status(200).json( user );
   }
 
-  @Put(':id')
-  async updateUser(@Param('id') id: string, @Body() userDTO: UserDTO, @Res() res: Response){
-    const userUpdated = await this.userService.updateUser(id, userDTO);
+  @MessagePattern(UsersMSG.UPDATE)
+  async updateUser(@Payload() payload, @Res() res: Response){
+    const userUpdated = await this.userService.updateUser(payload.id, payload.userDTO);
     if (!userUpdated){
-      return res.status(404).json({ message: `User with id ${id} Not Found` });
+      return res.status(404).json({ message: `User with id ${payload.id} Not Found` });
     }
     return res.status(200).json( userUpdated ); 
   }
 
-  @Delete(':id')
-  async deleteUser(@Param('id') id: string, @Res() res: Response){
+  @MessagePattern(UsersMSG.DELETE)
+  async deleteUser(@Payload() id: string, @Res() res: Response){
     const answer = await this.userService.deleteUser(id);
     if(!answer){
       return res.status(400).json({ message: `User with id: ${id} Not found` });
