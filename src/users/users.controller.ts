@@ -11,25 +11,33 @@ export class UsersController {
 
   @MessagePattern(UsersMSG.FIND_ALL)
   async getUsers(@Res() res: Response){
-    const users = await this.userService.findAll();
-    if(!users){
-      return res.status(404).json({ message: "There are not users"});
+    try {
+      const users = await this.userService.findAll();
+      if(users.length == 0) return { message: "There are not users"}
+      return users;
+    } catch (error) {
+      return { message: 'Error fetching users', error };
     }
-    return res.status(200).json( users );
   }
 
   @MessagePattern(UsersMSG.CREATE)
   saveUser(@Payload() userDto: UserDTO){
-    return this.userService.saveUser(userDto);
+    try {
+      return this.userService.saveUser(userDto);
+    } catch(error) {
+      return { message: 'Error feching users', error}
+    }
   }
 
   @MessagePattern(UsersMSG.FIND_ONE)
   async getUserById(@Payload() id: string, @Res() res: Response){
-    const user = await this.userService.getUserById(id);
-    if(!user){
-      return res.status(404).json({ message: `User with id ${id} Not Found` });
+    try {
+      const user = await this.userService.getUserById(id);
+      if(user == null) return { message: "There are not users"}
+      return user
+    } catch (error) {
+      return { message: 'Error feching users', error}
     }
-    return res.status(200).json( user );
   }
 
   @MessagePattern(UsersMSG.UPDATE)

@@ -15,8 +15,13 @@ export class UserRepository {
   }
 
   async saveUser(userEntity: UserEntity): Promise<IUsers>{
-    let newUser = new this.userModel( userEntity )
-    return await newUser.save()
+    try {
+      let newUser = new this.userModel( userEntity )
+      let result = await newUser.save()
+      return result
+    } catch(error) {
+      throw new Error('Error saving user: ' + error.message);
+    }
   }
 
   async getUserById(id: string): Promise<IUsers>{
