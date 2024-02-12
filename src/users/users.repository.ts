@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUsers } from 'src/common/interfaces/users.interfaces';
@@ -14,13 +14,12 @@ export class UserRepository {
     return await this.userModel.find();
   }
 
-  async saveUser(userEntity: UserEntity): Promise<IUsers>{
+  async saveUser(userEntity: UserEntity){
     try {
-      let newUser = new this.userModel( userEntity )
-      let result = await newUser.save()
-      return result
+      let newUser = new this.userModel( userEntity );
+      return await newUser.save(); 
     } catch(error) {
-      throw new Error('Error saving user: ' + error.message);
+      return error
     }
   }
 
